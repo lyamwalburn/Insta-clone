@@ -53,9 +53,15 @@ module.exports = function (app, passport,multer) {
     })
 
     //Feed
-    app.get('/feed',isLoggedIn,(req,res)=>{
+    app.get('/feed',isLoggedIn, async (req,res)=>{
         //get all the posts and send them to this page to be displayed
-        res.render('feed.ejs', {user: req.user})
+        try{
+            const result = await Post.find()
+            res.render('feed.ejs', {user: req.user, posts: result})
+        } catch (err){
+            console.error(err)
+        }
+        
     })
 
     //Individual Post
@@ -63,11 +69,8 @@ module.exports = function (app, passport,multer) {
         let postId = req.params.id
         //find the post in db via id
         try {
-            await Post.find({_id: postId}).toArray((err,result)=>{
-                if(err) return console.error(err)
-
-                res.render('post.ejs',{posts: result})
-            })
+            const result = await Post.find({_id: postId})
+            res.render('post.ejs',{posts: result})
         }catch (err){
             console.error(err)
         }
@@ -76,7 +79,7 @@ module.exports = function (app, passport,multer) {
     //Create Post
     app.post('/icPost',upload.single('file-to-upload'),async (req,res,next)=>{
         let userId = req.session.passport.user
-        console.log(req.file.filename);
+        console.log(req.body.title);
         try{
             await Post.create({
                 posterId: userId, 
