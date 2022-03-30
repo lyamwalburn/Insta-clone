@@ -1,16 +1,17 @@
-let express = require('express')
-let app = express()
-let port = process.env.PORT || 3000
-let mongoose = require('mongoose')
-let passport = require('passport')
-let flash = require('connect-flash')
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 3000
+const mongoose = require('mongoose')
+const passport = require('passport')
+const multer = require('multer')
+const flash = require('connect-flash')
 
-let morgan = require('morgan')
-let cookieParser = require('cookie-parser')
-let bodyParser = require('body-parser')
-let session = require('express-session')
+const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const session = require('express-session')
 
-let configDB = require('./config/database.js')
+const configDB = require('./config/database.js')
 
 // Config ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 mongoose.connect(configDB.url)
@@ -20,6 +21,7 @@ require('./config/passport')(passport)
 app.use(morgan('dev'))
 app.use(cookieParser())
 app.use(bodyParser())
+app.use(express.static('public'))
 
 app.set('view engine','ejs')
 
@@ -30,7 +32,7 @@ app.use(passport.session())
 app.use(flash())
 
 // Routes ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-require('./routes/routes.js')(app,passport)
+require('./routes/routes.js')(app,passport,multer)
 
 //Launch ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 app.listen(port)

@@ -3,6 +3,8 @@ let LocalStrategy = require('passport-local').Strategy
 
 let User = require('../models/User')
 
+let configAuth = require('./auth')
+
 module.exports = function(passport){
     //passport session setup
     //use to serialize user for the session
@@ -69,5 +71,7 @@ module.exports = function(passport){
             return done(null,user)
         })
     }))
+
+   
 
 }
